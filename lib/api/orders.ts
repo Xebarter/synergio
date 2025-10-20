@@ -118,7 +118,7 @@ export async function getOrderById(id: string, userId: string) {
 
   // Calculate order total
   const total = order.orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum: number, item: any) => sum + item.price * item.quantity,
     0
   );
 
