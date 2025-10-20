@@ -152,7 +152,7 @@ export async function createOrder(data: OrderData, userId: string) {
     // 3. Check stock availability
     const stockIssues = [];
     for (const item of data.items) {
-      const product = products.find(p => p.id === item.productId);
+      const product = products.find((p: any) => p.id === item.productId);
       if (!product) continue;
       
       if (product.stock < item.quantity) {
