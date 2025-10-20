@@ -507,9 +507,39 @@ const categories: Category[] = [
     "created_at": new Date().toISOString(),
     "updated_at": new Date().toISOString(),
     "children": [
-      { "name": "Gardening", "items": ["Seeds", "Pots", "Watering", "Soil"] },
-      { "name": "Tools", "items": ["Hand", "Power", "Storage"] },
-      { "name": "Outdoor", "items": ["Furniture", "BBQ", "Lighting"] }
+      { 
+        "id": "10-1",
+        "name": "Gardening", 
+        "slug": "garden-tools-gardening",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Seeds", "Pots", "Watering", "Soil"] 
+      } as Category,
+      { 
+        "id": "10-2",
+        "name": "Tools", 
+        "slug": "garden-tools-tools",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Hand", "Power", "Storage"] 
+      } as Category,
+      { 
+        "id": "10-3",
+        "name": "Outdoor", 
+        "slug": "garden-tools-outdoor",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Furniture", "BBQ", "Lighting"] 
+      } as Category
     ]
   },
   {
@@ -521,10 +551,40 @@ const categories: Category[] = [
     "is_active": true,
     "created_at": new Date().toISOString(),
     "updated_at": new Date().toISOString(),
-    "subcategories": [
-      { "name": "Equipment", "items": ["Printers", "Shredders", "Projectors"] },
-      { "name": "Furniture", "items": ["Desks", "Chairs", "Cabinets"] },
-      { "name": "Stationery", "items": ["Notebooks", "Pens", "Files", "Paper"] }
+    "children": [
+      { 
+        "id": "11-1",
+        "name": "Stationery", 
+        "slug": "office-stationery",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Pens", "Paper", "Clips", "Staplers"] 
+      } as Category,
+      { 
+        "id": "11-2",
+        "name": "Furniture", 
+        "slug": "office-furniture",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Desks", "Chairs", "Shelving", "Filing"] 
+      } as Category,
+      { 
+        "id": "11-3",
+        "name": "Supplies", 
+        "slug": "office-supplies",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Ink", "Toner", "Labels", "Envelopes"] 
+      } as Category
     ]
   },
   {
@@ -536,10 +596,40 @@ const categories: Category[] = [
     "is_active": true,
     "created_at": new Date().toISOString(),
     "updated_at": new Date().toISOString(),
-    "subcategories": [
-      { "name": "Supplies", "items": ["Paints", "Canvases", "Drawing", "Paper"] },
-      { "name": "Crafts", "items": ["Sewing", "Beads", "DIY Kits"] },
-      { "name": "Music", "items": ["Guitars", "Drums", "Studio"] }
+    "children": [
+      { 
+        "id": "12-1",
+        "name": "Arts", 
+        "slug": "arts-crafts-arts",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Paint", "Canvas", "Brushes", "Easels"] 
+      } as Category,
+      { 
+        "id": "12-2",
+        "name": "Crafts", 
+        "slug": "arts-crafts-crafts",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Yarn", "Fabric", "Needles", "Patterns"] 
+      } as Category,
+      { 
+        "id": "12-3",
+        "name": "Supplies", 
+        "slug": "arts-crafts-supplies",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Glue", "Scissors", "Tape", "Paper"] 
+      } as Category
     ]
   },
   {
@@ -551,10 +641,40 @@ const categories: Category[] = [
     "is_active": true,
     "created_at": new Date().toISOString(),
     "updated_at": new Date().toISOString(),
-    "subcategories": [
-      { "name": "Luggage", "items": ["Suitcases", "Backpacks", "Duffels", "Pouches"] },
-      { "name": "Accessories", "items": ["Pillows", "Bottles", "Adapters"] },
-      { "name": "Lifestyle", "items": ["Glasses", "Watches", "Trackers"] }
+    "children": [
+      { 
+        "id": "13-1",
+        "name": "Luggage", 
+        "slug": "travel-luggage",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Suitcases", "Backpacks", "Duffles", "Bags"] 
+      } as Category,
+      { 
+        "id": "13-2",
+        "name": "Accessories", 
+        "slug": "travel-accessories",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Passport", "Luggage", "Travel", "Neck"] 
+      } as Category,
+      { 
+        "id": "13-3",
+        "name": "Gear", 
+        "slug": "travel-gear",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Electronics", "Adapters", "Toiletries", "Pillows"] 
+      } as Category
     ]
   },
   {
@@ -566,10 +686,40 @@ const categories: Category[] = [
     "is_active": true,
     "created_at": new Date().toISOString(),
     "updated_at": new Date().toISOString(),
-    "subcategories": [
-      { "name": "Consulting", "items": ["Business", "Tech", "Marketing"] },
-      { "name": "Repairs", "items": ["Phone", "Computer", "Appliance"] },
-      { "name": "Training", "items": ["Courses", "Workshops", "Coaching"] }
+    "children": [
+      { 
+        "id": "14-1",
+        "name": "Repairs", 
+        "slug": "services-repairs",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Phone", "Computer", "Appliance", "Electronics"] 
+      } as Category,
+      { 
+        "id": "14-2",
+        "name": "Installation", 
+        "slug": "services-installation",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Appliances", "Electronics", "Furniture", "Doors"] 
+      } as Category,
+      { 
+        "id": "14-3",
+        "name": "Consulting", 
+        "slug": "services-consulting",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Tech", "Business", "Design", "Marketing"] 
+      } as Category
     ]
   }
 ];
@@ -824,7 +974,6 @@ export default function EditProductPage() {
           initialData={product}
           categories={categories}
           currencies={currencies}
-          categoryMapping={categoryMap}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
         />

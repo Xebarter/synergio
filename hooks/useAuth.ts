@@ -2,6 +2,15 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
+// Extend the default user type to include the role property
+interface ExtendedUser {
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string;
+}
+
 export const useAuth = (required = false) => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -20,7 +29,7 @@ export const useAuth = (required = false) => {
   };
 
   return {
-    user: session?.user,
+    user: session?.user as ExtendedUser | undefined,
     isLoading,
     isAuthenticated,
     signOut: handleSignOut,

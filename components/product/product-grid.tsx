@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ProductCard } from '@/components/product/product-card';
-import { ProductList } from '@/components/product/product-list';
+import { ProductList } from './ProductList';
 import { cn } from '@/lib/utils';
 
 interface ProductGridProps {

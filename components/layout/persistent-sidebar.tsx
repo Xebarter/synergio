@@ -255,7 +255,7 @@ export function PersistentSidebar({ user, categories = sampleCategories, classNa
         <div className="p-3 space-y-2 border-b border-gray-100">
           {navigationItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            const isActive = pathname && (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)));
             
             return (
               <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>

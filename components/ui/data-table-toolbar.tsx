@@ -40,7 +40,9 @@ export function DataTableToolbar<TData>({
               }
               className="h-8 w-[150px] lg:w-[250px]"
             />
-            {table.getColumn(searchKey)?.getFilterValue() && (
+            {table.getColumn(searchKey)?.getFilterValue() && 
+             typeof table.getColumn(searchKey)?.getFilterValue() === 'string' &&
+             (table.getColumn(searchKey)?.getFilterValue() as string).length > 0 ? (
               <Button
                 variant="ghost"
                 onClick={() => table.getColumn(searchKey)?.setFilterValue("")}
@@ -48,7 +50,7 @@ export function DataTableToolbar<TData>({
               >
                 <X className="h-4 w-4" />
               </Button>
-            )}
+            ) : null}
           </div>
         )}
         

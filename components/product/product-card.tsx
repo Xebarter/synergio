@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
-import { ProductImage } from './ProductImage';
+import ProductImage from './ProductImage';
 
 interface ProductCardProps {
   product: {

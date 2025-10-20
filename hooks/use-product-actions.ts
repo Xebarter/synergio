@@ -18,7 +18,7 @@ export function useProductActions() {
           title: 'Success',
           description: 'Product created successfully',
         });
-        router.push(`/admin/products/${result.productId}`);
+        router.push(`/admin/products/${result.data?.productId}`);
         router.refresh();
       } else {
         throw new Error(result.error);

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useState, useCallback, useRef } from 'react';
 import { Loader2, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,16 +21,21 @@ export function ImageUploader({
   multiple = false,
 }: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const onDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      if (!acceptedFiles.length) return;
+  const handleFiles = useCallback(
+    async (files: FileList) => {
+      if (!files.length) return;
 
       setIsUploading(true);
       
       try {
+        // Convert FileList to Array
+        const filesArray = Array.from(files);
+        
         // Only process the first file if multiple is false
-        const filesToUpload = multiple ? acceptedFiles : [acceptedFiles[0]];
+        const filesToUpload = multiple ? filesArray : [filesArray[0]];
         
         for (const file of filesToUpload) {
           const formData = new FormData();
@@ -50,35 +54,85 @@ export function ImageUploader({
           onUploadSuccess(result);
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
-        onUploadError(error instanceof Error ? error : new Error('Failed to upload image'));
+        console.error('Upload error:', error);
+        onUploadError(error instanceof Error ? error : new Error('Unknown error'));
       } finally {
         setIsUploading(false);
       }
     },
-    [productId, onUploadSuccess, onUploadError, multiple]
+    [productId, multiple, onUploadSuccess, onUploadError]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.gif'],
+  const onDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragActive(false);
+      
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleFiles(e.dataTransfer.files);
+      }
     },
-    disabled: isUploading,
-    multiple,
-  });
+    [handleFiles]
+  );
+
+  const onDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+  }, []);
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const onFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleFiles(e.target.files);
+        // Reset the input value to allow selecting the same file again
+        e.target.value = '';
+      }
+    },
+    [handleFiles]
+  );
+
+  const triggerFileInput = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   return (
     <div
-      {...getRootProps()}
       className={cn(
-        'border-2 border-dashed rounded-lg p-6 text-center transition-colors',
-        isDragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25',
-        isUploading && 'opacity-70 cursor-not-allowed',
+        "border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors",
+        isDragActive 
+          ? "border-primary bg-primary/5" 
+          : "border-muted-foreground/25 hover:border-muted-foreground/50",
+        isUploading && "opacity-70 pointer-events-none",
         className
       )}
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onClick={triggerFileInput}
     >
-      <input {...getInputProps()} />
+      <input
+        ref={fileInputRef}
+        type="file"
+        className="hidden"
+        onChange={onFileInputChange}
+        multiple={multiple}
+        accept="image/*"
+      />
+      
       <div className="flex flex-col items-center justify-center space-y-2">
         {isUploading ? (
           <>

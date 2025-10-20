@@ -15,6 +15,14 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUploader, ImagePreview } from '@/components/product/ImageUploader';
 
+// Simple slugify function
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
@@ -26,9 +34,9 @@ const productFormSchema = z.object({
   is_active: z.boolean().default(true),
   category_id: z.string().min(1, 'Category is required'),
   brand: z.string().optional().nullable(),
-  tags: z.string().optional().transform(val => 
-    val ? val.split(',').map(tag => tag.trim()).filter(Boolean) : []
-  ),
+  tags: z.string().optional(),
+  specifications: z.record(z.unknown()).optional(),
+  slug: z.string().optional(),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -42,7 +50,7 @@ interface ProductFormProps {
 
 export function ProductForm({
   product,
-  onSubmit,
+  onSubmitAction,
   isSubmitting,
   categories,
 }: ProductFormProps) {
@@ -62,7 +70,7 @@ export function ProductForm({
     is_active: product?.is_active ?? true,
     category_id: product?.category_id || '',
     brand: product?.brand || '',
-    tags: product?.tags?.join(', ') || '',
+    tags: product?.tags?.join(', ') ?? '',
     specifications: product?.specifications || {},
     slug: product?.slug || '',
   };
@@ -86,7 +94,7 @@ export function ProductForm({
       const productData: ProductInsert = {
         ...data,
         images,
-        tags: Array.isArray(data.tags) ? data.tags : (data.tags as string).split(',').map(tag => tag.trim()).filter(Boolean),
+        tags: data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(Boolean) : [],
         specifications: data.specifications || {},
         slug,
       };

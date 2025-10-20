@@ -3,14 +3,28 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
+// Extend the Session type to include the role property
 type Role = "USER" | "ADMIN";
 
-interface ProtectedRouteProps {
+interface ExtendedUser {
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: Role;
+}
+
+interface ExtendedSession {
+  user?: ExtendedUser;
+  expires?: string;
+}
+
+type ProtectedRouteProps = {
   children: React.ReactNode;
   roles?: Role[];
   loadingComponent?: React.ReactNode;
   unauthorizedComponent?: React.ReactNode;
-}
+};
 
 export function ProtectedRoute({
   children,
@@ -35,7 +49,7 @@ export function ProtectedRoute({
     </div>
   ),
 }: ProtectedRouteProps) {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession() as { data: ExtendedSession | null; status: "loading" | "authenticated" | "unauthenticated" };
   const router = useRouter();
 
   useEffect(() => {
