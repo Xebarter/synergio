@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { OrderData, PaginationOptions } from "@/types/api";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function getOrders({
   userId,
@@ -63,12 +63,7 @@ export async function getOrders({
   ]);
 
   // Calculate total for each order
-  const ordersWithTotals = orders.map((order: Prisma.OrderGetPayload<{
-    include: {
-      customer: true,
-      orderItems: true
-    }
-  }>) => ({
+  const ordersWithTotals = orders.map((order) => ({
     ...order,
     total: order.orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
