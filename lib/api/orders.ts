@@ -63,10 +63,10 @@ export async function getOrders({
   ]);
 
   // Calculate total for each order
-  const ordersWithTotals = orders.map((order) => ({
+  const ordersWithTotals = orders.map((order: any) => ({
     ...order,
     total: order.orderItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum: number, item: any) => sum + item.price * item.quantity,
       0
     ),
   }));
