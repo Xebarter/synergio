@@ -129,7 +129,7 @@ export async function getOrderById(id: string, userId: string) {
 }
 
 export async function createOrder(data: OrderData, userId: string) {
-  return prisma.$transaction(async (prisma) => {
+  return prisma.$transaction(async (prisma: any) => {
     // 1. Verify customer exists and belongs to user
     const customer = await prisma.customer.findFirst({
       where: { id: data.customerId, userId },
