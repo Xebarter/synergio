@@ -16,6 +16,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, X, Image as ImageIcon, ArrowLeft } from 'lucide-react';
+import { Category as BaseCategory } from '@/types';
+
+// Extend the Category type to include subcategories
+interface Category extends BaseCategory {
+  children?: Category[];
+  items?: string[];
+}
 
 const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -53,11 +60,6 @@ interface SubcategoryItem {
   items: string[];
 }
 
-interface SubcategoryItem {
-  name: string;
-  items: string[];
-}
-
 interface CategoryMapping {
   [frontendId: string]: string; // Maps frontend category ID to database category UUID
 }
@@ -71,13 +73,12 @@ interface Currency {
 interface ProductFormProps {
   initialData?: any | null;
   categories: Category[];
-  categoryMapping: CategoryMapping;
   currencies?: Currency[];
   onSubmit: (data: ProductFormValues) => Promise<void>;
   isSubmitting: boolean;
 }
 
-export function ProductForm({ initialData, categories, currencies = [], categoryMap = {}, onSubmit, isSubmitting }: ProductFormProps) {
+export function ProductForm({ initialData, categories, currencies = [], onSubmit, isSubmitting }: ProductFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('general');
@@ -134,10 +135,10 @@ export function ProductForm({ initialData, categories, currencies = [], category
   const selectedCategoryObj = categories.find(cat => cat.id === category) || categories[0];
   
   // Get subcategories for the selected category
-  const subcategories = selectedCategoryObj?.subcategories || [];
+  const subcategories = selectedCategoryObj?.children || [];
   
   // Get items for the selected subcategory
-  const selectedSubcategoryObj = subcategories.find(sub => sub.name === subcategory);
+  const selectedSubcategoryObj = subcategories.find((sub: Category) => sub.name === subcategory) || null;
   const subcategoryItems = selectedSubcategoryObj?.items || [];
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -773,7 +774,7 @@ export function ProductForm({ initialData, categories, currencies = [], category
                       <SelectValue placeholder="Select a subcategory" />
                     </SelectTrigger>
                     <SelectContent>
-                      {subcategories.map((sub, index) => (
+                      {subcategories.map((sub: Category, index: number) => (
                         <SelectItem key={index} value={sub.name}>
                           {sub.name}
                         </SelectItem>
@@ -797,7 +798,7 @@ export function ProductForm({ initialData, categories, currencies = [], category
                       <SelectValue placeholder="Select a subcategory item" />
                     </SelectTrigger>
                     <SelectContent>
-                      {subcategoryItems.map((item, index) => (
+                      {subcategoryItems.map((item: string, index: number) => (
                         <SelectItem key={index} value={item}>
                           {item}
                         </SelectItem>

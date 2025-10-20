@@ -5,7 +5,7 @@ import { Star, TrendingUp, Truck, RotateCcw, Lock, Zap, Heart, ShoppingCart, Che
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [wishlist, setWishlist] = useState([]);
+  const [wishlist, setWishlist] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState({ hours: 12, minutes: 34, seconds: 56 });
 
   const heroSlides = [
@@ -188,7 +188,7 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  const toggleWishlist = (id) => {
+  const toggleWishlist = (id: number) => {
     setWishlist(prev => 
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );

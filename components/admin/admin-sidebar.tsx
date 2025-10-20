@@ -77,23 +77,30 @@ export function AdminSidebar() {
       </div>
 
       {/* Collapsible Desktop Toggle Button */}
-      {!isCollapsed && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleCollapse}
-          className="hidden lg:flex fixed top-4 left-64 z-40 bg-white shadow-md rounded-lg ml-2 transition-all duration-300"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-      )}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleCollapse}
+        className={cn(
+          "hidden lg:flex fixed top-4 z-40 bg-white shadow-md rounded-lg transition-all duration-300 hover:bg-gray-50",
+          isCollapsed ? 'left-20 group-hover/sidebar:left-24' : 'left-64',
+          'transition-all duration-300'
+        )}
+        title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        <ChevronLeft className={cn(
+          'h-5 w-5 transition-transform',
+          isCollapsed ? 'rotate-180' : ''
+        )} />
+      </Button>
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-30 h-screen bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-20" : "w-64",
+        "fixed left-0 top-0 z-30 h-screen bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ease-in-out group/sidebar",
+        isCollapsed ? "w-20 hover:w-24" : "w-64",
         "lg:translate-x-0",
-        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+        isCollapsed && "hover:shadow-lg"
       )}>
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
@@ -183,15 +190,18 @@ export function AdminSidebar() {
             </div>
           )}
           {isCollapsed && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleCollapse}
-              className="w-full flex justify-center"
-              title="Expand sidebar"
-            >
-              <ChevronLeft className="h-5 w-5 rotate-180" />
-            </Button>
+            <div className="relative w-full h-12 flex items-center justify-center group/expand">
+              <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-r from-transparent to-white/50 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleCollapse}
+                className="z-10 w-10 h-10 rounded-full bg-white shadow-md hover:bg-gray-50 transition-all duration-300 group-hover/sidebar:scale-110"
+                title="Expand sidebar"
+              >
+                <ChevronLeft className="h-5 w-5 rotate-180 transition-transform duration-300 group-hover/expand:translate-x-0.5" />
+              </Button>
+            </div>
           )}
         </div>
       </div>

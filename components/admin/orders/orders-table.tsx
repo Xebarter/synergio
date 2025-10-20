@@ -83,7 +83,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
       case 'pending': return 'secondary';
       case 'processing': return 'default';
       case 'shipped': return 'default';
-      case 'delivered': return 'success';
+      case 'delivered': return 'default';
       case 'cancelled': return 'destructive';
       case 'refunded': return 'destructive';
       default: return 'secondary';
@@ -93,10 +93,10 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
   const getPaymentStatusVariant = (status: PaymentStatus) => {
     switch (status) {
       case 'pending': return 'secondary';
-      case 'paid': return 'success';
+      case 'paid': return 'default';
       case 'failed': return 'destructive';
       case 'refunded': return 'destructive';
-      case 'partially_refunded': return 'warning';
+      case 'partially_refunded': return 'secondary';
       default: return 'secondary';
     }
   };
@@ -114,6 +114,38 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
       setSelectedOrders([]);
     } else {
       setSelectedOrders(sortedOrders.map(order => order.id));
+    }
+  };
+
+  const handleDeleteClick = (orderId: string) => {
+    setOrderToDelete(orderId);
+  };
+
+  const confirmDelete = async () => {
+    if (orderToDelete) {
+      try {
+        await onDelete(orderToDelete);
+        setOrderToDelete(null);
+      } catch (error) {
+        console.error('Failed to delete order:', error);
+      }
+    }
+  };
+
+  const handleStatusChange = async (orderId: string, status: OrderStatus) => {
+    try {
+      await onStatusChange(orderId, status);
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      await onBulkDelete(selectedOrders);
+      setSelectedOrders([]);
+    } catch (error) {
+      console.error('Failed to delete orders:', error);
     }
   };
 
@@ -254,7 +286,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
               <TableHead>
                 <button
                   className="flex items-center gap-1 font-medium"
-                  onClick={() => requestSort('orderNumber')}
+                  onClick={() => handleSort('orderNumber')}
                 >
                   Order
                   <ArrowUpDown className="h-4 w-4" />
@@ -264,7 +296,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
               <TableHead className="text-right">
                 <button
                   className="flex items-center gap-1 font-medium ml-auto"
-                  onClick={() => requestSort('total')}
+                  onClick={() => handleSort('total')}
                 >
                   Total
                   <ArrowUpDown className="h-4 w-4" />
@@ -273,7 +305,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
               <TableHead>
                 <button
                   className="flex items-center gap-1 font-medium"
-                  onClick={() => requestSort('status')}
+                  onClick={() => handleSort('status')}
                 >
                   Status
                   <ArrowUpDown className="h-4 w-4" />
@@ -282,7 +314,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
               <TableHead>
                 <button
                   className="flex items-center gap-1 font-medium"
-                  onClick={() => requestSort('paymentStatus')}
+                  onClick={() => handleSort('paymentStatus')}
                 >
                   Payment
                   <ArrowUpDown className="h-4 w-4" />
@@ -291,7 +323,7 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
               <TableHead>
                 <button
                   className="flex items-center gap-1 font-medium"
-                  onClick={() => requestSort('createdAt')}
+                  onClick={() => handleSort('createdAt')}
                 >
                   Date
                   <ArrowUpDown className="h-4 w-4" />
@@ -325,12 +357,12 @@ export function OrdersTable({ orders, isLoading, onStatusChange, onDelete, onBul
                     ${order.total.toFixed(2)}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getStatusBadgeVariant(order.status)}>
+                    <Badge variant={getStatusVariant(order.status)}>
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)}>
+                    <Badge variant={getPaymentStatusVariant(order.paymentStatus)}>
                       {order.paymentStatus.split('_').map(word => 
                         word.charAt(0).toUpperCase() + word.slice(1)
                       ).join(' ')}

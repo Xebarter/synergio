@@ -393,7 +393,7 @@ export default function EditProductPage() {
           initialData={product}
           categories={categories}
           currencies={currencies}
-          categoryMap={categoryMap}
+          categoryMapping={categoryMap}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
         />

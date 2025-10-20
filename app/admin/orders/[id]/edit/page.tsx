@@ -174,7 +174,7 @@ export default function EditOrderPage() {
     };
 
     fetchOrder();
-  }, [params.id, toast]);
+  }, [params?.id, toast]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -297,7 +297,7 @@ export default function EditOrderPage() {
       });
       
       // Redirect back to the order details page
-      router.push(`/admin/orders/${params.id}`);
+      router.push(`/admin/orders/${params?.id || ''}`);
     } catch (error) {
       console.error('Failed to update order:', error);
       toast({

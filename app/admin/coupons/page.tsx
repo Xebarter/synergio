@@ -221,7 +221,7 @@ export default function AdminCouponsPage() {
         });
         
         // Use mock data as fallback
-        const mockCoupons = [
+        const mockCoupons: Coupon[] = [
           {
             id: '1',
             code: 'WELCOME10',

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProducts, createProduct } from '@/lib/services/product-service';
-import { withAuth } from '@/middleware/withAuth';
+import { getProducts, createProduct } from '@/app/actions/product-actions';
 
 export async function GET(request: Request) {
   try {
@@ -8,16 +7,12 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get('page') || '1';
     const limit = searchParams.get('limit') || '10';
-    const search = searchParams.get('search') || '';
-    const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    // Note: The current getProducts function doesn't support search, sortBy, or sortOrder
+    // These could be implemented in the future if needed
 
     const products = await getProducts({
       page: parseInt(page),
-      limit: parseInt(limit),
-      search,
-      sortBy,
-      sortOrder: sortOrder as 'asc' | 'desc'
+      limit: parseInt(limit)
     });
     
     return NextResponse.json(products);

@@ -303,7 +303,7 @@ export default function NewProductPage() {
       <ProductForm
         categories={categories}
         currencies={currencies}
-        categoryMap={categoryMap}
+        categoryMapping={categoryMap}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />

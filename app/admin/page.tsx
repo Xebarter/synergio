@@ -254,7 +254,7 @@ export default function AdminDashboard() {
         setTopProducts(topProductsData);
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
-        setError(err.message || 'Failed to fetch dashboard data');
+        setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
       } finally {
         setLoading(false);
       }

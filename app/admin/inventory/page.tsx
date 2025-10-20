@@ -149,11 +149,11 @@ export default function AdminInventoryPage() {
         });
         
         // Use mock data as fallback
-        const mockInventory = [
+        const mockInventory: InventoryItem[] = [
           {
             id: '1',
-            productName: 'Premium Wireless Headphones',
-            sku: 'HP-1000',
+            productName: 'Wireless Headphones',
+            sku: 'HP-WLS-BLK',
             category: 'Electronics',
             inStock: 25,
             reserved: 5,
@@ -163,9 +163,9 @@ export default function AdminInventoryPage() {
           },
           {
             id: '2',
-            productName: 'Leather Wallet',
-            sku: 'WALLET-BRN',
-            category: 'Accessories',
+            productName: 'Running Shoes',
+            sku: 'SHOE-RUN-10',
+            category: 'Footwear',
             inStock: 0,
             reserved: 0,
             available: 0,

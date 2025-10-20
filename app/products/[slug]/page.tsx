@@ -177,7 +177,7 @@ function ProductPageContent({ params }: { params: { slug: string } }) {
           ...processedProduct,
           images: allImages
         });
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching product:', err);
         setError(err.message || 'Failed to load product. Please try again later.');
       } finally {
@@ -693,11 +693,6 @@ function ProductPageContent({ params }: { params: { slug: string } }) {
                       fill
                       sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        // 如果图片加载失败，显示占位符文本
-                        const target = e.target as HTMLImageElement;
-                        target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' font-family='system-ui' font-size='16' fill='%239ca3af' text-anchor='middle'%3ERelated Product ${item}%3C/text%3E%3C/svg%3E`;
-                      }}
                     />
                     {discount > 0 && (
                       <Badge className="absolute top-2 right-2 bg-green-500 hover:bg-green-600 px-2 py-1 text-xs">

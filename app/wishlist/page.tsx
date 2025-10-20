@@ -8,6 +8,7 @@ import { Heart, ArrowRight, ShoppingBag, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/store';
+import { cn } from '@/lib/utils';
 
 export default function WishlistPage() {
   const { items, removeFromWishlist, clearWishlist } = useWishlistStore();

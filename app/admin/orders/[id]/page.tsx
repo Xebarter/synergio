@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
@@ -140,7 +141,7 @@ export default function OrderDetailPage() {
     };
 
     fetchOrder();
-  }, [params.id, toast]);
+  }, [params?.id, toast]);
 
   const handleStatusUpdate = async (status: OrderStatus) => {
     if (!order) return;
@@ -421,7 +422,7 @@ export default function OrderDetailPage() {
                     <p className="text-sm text-muted-foreground">Expires 12/25</p>
                   </div>
                   <div className="ml-auto">
-                    <Badge variant={order.paymentStatus === 'paid' ? 'success' : 'outline'}>
+                    <Badge variant={order.paymentStatus === 'paid' ? 'default' : 'outline'}>
                       {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
                     </Badge>
                   </div>

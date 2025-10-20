@@ -397,7 +397,7 @@ export default function AdminReportsPage() {
               <div className="w-48">
                 <Label htmlFor="report-type-desktop" className="text-xs">Report Type</Label>
                 <Select value={reportType} onValueChange={setReportType}>
-                  <SelectTrigger id="report-type-desktop" size="sm">
+                  <SelectTrigger id="report-type-desktop">
                     <SelectValue placeholder="Select report type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -413,7 +413,7 @@ export default function AdminReportsPage() {
               <div className="w-48">
                 <Label htmlFor="date-range-desktop" className="text-xs">Date Range</Label>
                 <Select value={dateRange} onValueChange={setDateRange}>
-                  <SelectTrigger id="date-range-desktop" size="sm">
+                  <SelectTrigger id="date-range-desktop">
                     <SelectValue placeholder="Select date range" />
                   </SelectTrigger>
                   <SelectContent>
