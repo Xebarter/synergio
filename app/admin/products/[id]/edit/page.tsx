@@ -5,101 +5,508 @@ import { useToast } from '@/hooks/use-toast';
 import { ProductForm } from '@/components/admin/products/product-form';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { Category as BaseCategory } from '@/types';
+
+// Extend the Category type to include items property
+interface Category extends BaseCategory {
+  children?: Category[];
+  items?: string[];
+}
 
 // Updated categories to match those in persistent-sidebar.tsx with subcategories
-const categories = [
+const categories: Category[] = [
   {
     "id": "1",
     "name": "Phones & Tablets",
-    "subcategories": [
-      { "name": "Smartphones", "items": ["Android", "iPhone", "Feature", "Refurb"] },
-      { "name": "Tablets", "items": ["Android", "iPad", "Kids", "Keyboards"] },
-      { "name": "Wearables", "items": ["Smartwatch", "Fitness", "Glasses"] },
-      { "name": "Accessories", "items": ["Cases", "Protectors", "Power Banks", "Cables", "Earphones", "Cards", "Mounts"] }
+    "slug": "phones-tablets",
+    "sort_order": 1,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "1-1",
+        "name": "Smartphones", 
+        "slug": "phones-tablets-smartphones",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Android", "iPhone", "Feature", "Refurb"] 
+      } as Category,
+      { 
+        "id": "1-2",
+        "name": "Tablets", 
+        "slug": "phones-tablets-tablets",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Android", "iPad", "Kids", "Keyboards"] 
+      } as Category,
+      { 
+        "id": "1-3",
+        "name": "Wearables", 
+        "slug": "phones-tablets-wearables",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Smartwatch", "Fitness", "Glasses"] 
+      } as Category,
+      { 
+        "id": "1-4",
+        "name": "Accessories", 
+        "slug": "phones-tablets-accessories",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Cases", "Protectors", "Power Banks", "Cables", "Earphones", "Cards", "Mounts"] 
+      } as Category
     ]
   },
   {
     "id": "2",
     "name": "Computers",
-    "subcategories": [
-      { "name": "Computers", "items": ["Laptops", "Desktops", "Mini PC", "All-in-One"] },
-      { "name": "Accessories", "items": ["Keyboards", "Monitors", "Drives", "Bags", "Printers"] },
-      { "name": "Networking", "items": ["Routers", "Modems", "Switches", "Cables"] },
-      { "name": "Photography", "items": ["Cameras", "Drones", "Lenses", "Bags"] },
-      { "name": "Audio & Video", "items": ["Headphones", "Speakers", "Mics", "Home Theatre"] },
-      { "name": "Gaming", "items": ["Consoles", "Controllers", "Headsets", "Accessories"] }
+    "slug": "computers",
+    "sort_order": 2,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "2-1",
+        "name": "Computers", 
+        "slug": "computers-computers",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Laptops", "Desktops", "Mini PC", "All-in-One"] 
+      } as Category,
+      { 
+        "id": "2-2",
+        "name": "Accessories", 
+        "slug": "computers-accessories",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Keyboards", "Monitors", "Drives", "Bags", "Printers"] 
+      } as Category,
+      { 
+        "id": "2-3",
+        "name": "Networking", 
+        "slug": "computers-networking",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Routers", "Modems", "Switches", "Cables"] 
+      } as Category,
+      { 
+        "id": "2-4",
+        "name": "Photography", 
+        "slug": "computers-photography",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Cameras", "Drones", "Lenses", "Bags"] 
+      } as Category,
+      { 
+        "id": "2-5",
+        "name": "Audio & Video", 
+        "slug": "computers-audio-video",
+        "sort_order": 5,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Headphones", "Speakers", "Mics", "Home Theatre"] 
+      } as Category,
+      { 
+        "id": "2-6",
+        "name": "Gaming", 
+        "slug": "computers-gaming",
+        "sort_order": 6,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Consoles", "Controllers", "Headsets", "Accessories"] 
+      } as Category
     ]
   },
   {
     "id": "3",
     "name": "Home & Kitchen",
-    "subcategories": [
-      { "name": "Appliances", "items": ["Fridges", "Washers", "Microwaves", "Cookers"] },
-      { "name": "Kitchenware", "items": ["Cookware", "Bakeware", "Cutlery", "Blenders"] },
-      { "name": "Décor", "items": ["Wall Art", "Clocks", "Rugs", "Lighting"] },
-      { "name": "Furniture", "items": ["Sofas", "Tables", "Beds", "Cabinets"] }
+    "slug": "home-kitchen",
+    "sort_order": 3,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "3-1",
+        "name": "Appliances", 
+        "slug": "home-kitchen-appliances",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Fridges", "Washers", "Microwaves", "Cookers"] 
+      } as Category,
+      { 
+        "id": "3-2",
+        "name": "Kitchenware", 
+        "slug": "home-kitchen-kitchenware",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Cookware", "Bakeware", "Cutlery", "Blenders"] 
+      } as Category,
+      { 
+        "id": "3-3",
+        "name": "Décor", 
+        "slug": "home-kitchen-decor",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Wall Art", "Clocks", "Rugs", "Lighting"] 
+      } as Category,
+      { 
+        "id": "3-4",
+        "name": "Furniture", 
+        "slug": "home-kitchen-furniture",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Sofas", "Tables", "Beds", "Cabinets"] 
+      } as Category
     ]
   },
   {
     "id": "4",
     "name": "Fashion",
-    "subcategories": [
-      { "name": "Men", "items": ["Shirts", "Jeans", "Jackets", "Shoes"] },
-      { "name": "Women", "items": ["Dresses", "Tops", "Pants", "Shoes"] },
-      { "name": "Kids", "items": ["Boys", "Girls", "Baby", "Shoes"] },
-      { "name": "Accessories", "items": ["Glasses", "Belts", "Scarves", "Jewelry"] }
+    "slug": "fashion",
+    "sort_order": 4,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "4-1",
+        "name": "Men", 
+        "slug": "fashion-men",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Shirts", "Jeans", "Jackets", "Shoes"] 
+      } as Category,
+      { 
+        "id": "4-2",
+        "name": "Women", 
+        "slug": "fashion-women",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Dresses", "Tops", "Pants", "Shoes"] 
+      } as Category,
+      { 
+        "id": "4-3",
+        "name": "Kids", 
+        "slug": "fashion-kids",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Boys", "Girls", "Baby", "Shoes"] 
+      } as Category,
+      { 
+        "id": "4-4",
+        "name": "Accessories", 
+        "slug": "fashion-accessories",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Glasses", "Belts", "Scarves", "Jewelry"] 
+      } as Category
     ]
   },
   {
     "id": "5",
     "name": "Beauty & Health",
-    "subcategories": [
-      { "name": "Beauty", "items": ["Makeup", "Brushes", "Fragrances", "Nails"] },
-      { "name": "Skincare", "items": ["Creams", "Lotions", "Sunscreen", "Masks"] },
-      { "name": "Hair Care", "items": ["Shampoo", "Treatments", "Wigs", "Tools"] },
-      { "name": "Health", "items": ["Vitamins", "Wellness", "First Aid", "Hygiene"] }
+    "slug": "beauty-health",
+    "sort_order": 5,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "5-1",
+        "name": "Beauty", 
+        "slug": "beauty-health-beauty",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Makeup", "Brushes", "Fragrances", "Nails"] 
+      } as Category,
+      { 
+        "id": "5-2",
+        "name": "Skincare", 
+        "slug": "beauty-health-skincare",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Creams", "Lotions", "Sunscreen", "Masks"] 
+      } as Category,
+      { 
+        "id": "5-3",
+        "name": "Hair Care", 
+        "slug": "beauty-health-hair-care",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Shampoo", "Treatments", "Wigs", "Tools"] 
+      } as Category,
+      { 
+        "id": "5-4",
+        "name": "Health", 
+        "slug": "beauty-health-health",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Vitamins", "Wellness", "First Aid", "Hygiene"] 
+      } as Category
     ]
   },
   {
     "id": "6",
     "name": "Sports & Outdoors",
-    "subcategories": [
-      { "name": "Sports", "items": ["Football", "Basketball", "Tennis", "Gear"] },
-      { "name": "Fitness", "items": ["Treadmills", "Weights", "Yoga"] },
-      { "name": "Outdoor", "items": ["Tents", "Backpacks", "Hiking", "Bottles"] }
+    "slug": "sports-outdoors",
+    "sort_order": 6,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "6-1",
+        "name": "Sports", 
+        "slug": "sports-outdoors-sports",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Football", "Basketball", "Tennis", "Gear"] 
+      } as Category,
+      { 
+        "id": "6-2",
+        "name": "Fitness", 
+        "slug": "sports-outdoors-fitness",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Treadmills", "Weights", "Yoga"] 
+      } as Category,
+      { 
+        "id": "6-3",
+        "name": "Outdoor", 
+        "slug": "sports-outdoors-outdoor",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Tents", "Backpacks", "Hiking", "Bottles"] 
+      } as Category
     ]
   },
   {
     "id": "7",
     "name": "Groceries",
-    "subcategories": [
-      { "name": "Food", "items": ["Rice", "Pasta", "Oils", "Spices"] },
-      { "name": "Beverages", "items": ["Tea", "Coffee", "Drinks", "Water"] },
-      { "name": "Snacks", "items": ["Biscuits", "Chocolates", "Chips", "Nuts"] },
-      { "name": "Supplies", "items": ["Cleaning", "Detergent", "Paper"] }
+    "slug": "groceries",
+    "sort_order": 7,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "7-1",
+        "name": "Food", 
+        "slug": "groceries-food",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Rice", "Pasta", "Oils", "Spices"] 
+      } as Category,
+      { 
+        "id": "7-2",
+        "name": "Beverages", 
+        "slug": "groceries-beverages",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Tea", "Coffee", "Drinks", "Water"] 
+      } as Category,
+      { 
+        "id": "7-3",
+        "name": "Snacks", 
+        "slug": "groceries-snacks",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Biscuits", "Chocolates", "Chips", "Nuts"] 
+      } as Category,
+      { 
+        "id": "7-4",
+        "name": "Supplies", 
+        "slug": "groceries-supplies",
+        "sort_order": 4,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Cleaning", "Detergent", "Paper"] 
+      } as Category
     ]
   },
   {
     "id": "8",
     "name": "Toys & Games",
-    "subcategories": [
-      { "name": "Baby", "items": ["Diapers", "Food", "Bottles", "Clothing"] },
-      { "name": "Baby Gear", "items": ["Strollers", "Car Seats", "Carriers"] },
-      { "name": "Toys", "items": ["Educational", "Figures", "Puzzles", "RC Toys"] }
+    "slug": "toys-games",
+    "sort_order": 8,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "8-1",
+        "name": "Baby", 
+        "slug": "toys-games-baby",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Diapers", "Food", "Bottles", "Clothing"] 
+      } as Category,
+      { 
+        "id": "8-2",
+        "name": "Baby Gear", 
+        "slug": "toys-games-baby-gear",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Strollers", "Car Seats", "Carriers"] 
+      } as Category,
+      { 
+        "id": "8-3",
+        "name": "Toys", 
+        "slug": "toys-games-toys",
+        "sort_order": 3,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Educational", "Figures", "Puzzles", "RC Toys"] 
+      } as Category
     ]
   },
   {
     "id": "9",
     "name": "Automotive",
-    "subcategories": [
-      { "name": "Car Items", "items": ["Electronics", "Care", "Tires", "Fluids"] },
-      { "name": "Industrial", "items": ["Power Tools", "Safety", "Equipment"] }
+    "slug": "automotive",
+    "sort_order": 9,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
+      { 
+        "id": "9-1",
+        "name": "Car Items", 
+        "slug": "automotive-car-items",
+        "sort_order": 1,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Electronics", "Care", "Tires", "Fluids"] 
+      } as Category,
+      { 
+        "id": "9-2",
+        "name": "Industrial", 
+        "slug": "automotive-industrial",
+        "sort_order": 2,
+        "is_featured": true,
+        "is_active": true,
+        "created_at": new Date().toISOString(),
+        "updated_at": new Date().toISOString(),
+        "items": ["Power Tools", "Safety", "Equipment"] 
+      } as Category
     ]
   },
   {
     "id": "10",
     "name": "Garden & Tools",
-    "subcategories": [
+    "slug": "garden-tools",
+    "sort_order": 10,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
+    "children": [
       { "name": "Gardening", "items": ["Seeds", "Pots", "Watering", "Soil"] },
       { "name": "Tools", "items": ["Hand", "Power", "Storage"] },
       { "name": "Outdoor", "items": ["Furniture", "BBQ", "Lighting"] }
@@ -108,6 +515,12 @@ const categories = [
   {
     "id": "11",
     "name": "Office",
+    "slug": "office",
+    "sort_order": 11,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
     "subcategories": [
       { "name": "Equipment", "items": ["Printers", "Shredders", "Projectors"] },
       { "name": "Furniture", "items": ["Desks", "Chairs", "Cabinets"] },
@@ -117,6 +530,12 @@ const categories = [
   {
     "id": "12",
     "name": "Arts & Crafts",
+    "slug": "arts-crafts",
+    "sort_order": 12,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
     "subcategories": [
       { "name": "Supplies", "items": ["Paints", "Canvases", "Drawing", "Paper"] },
       { "name": "Crafts", "items": ["Sewing", "Beads", "DIY Kits"] },
@@ -126,6 +545,12 @@ const categories = [
   {
     "id": "13",
     "name": "Travel",
+    "slug": "travel",
+    "sort_order": 13,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
     "subcategories": [
       { "name": "Luggage", "items": ["Suitcases", "Backpacks", "Duffels", "Pouches"] },
       { "name": "Accessories", "items": ["Pillows", "Bottles", "Adapters"] },
@@ -135,6 +560,12 @@ const categories = [
   {
     "id": "14",
     "name": "Services",
+    "slug": "services",
+    "sort_order": 14,
+    "is_featured": true,
+    "is_active": true,
+    "created_at": new Date().toISOString(),
+    "updated_at": new Date().toISOString(),
     "subcategories": [
       { "name": "Consulting", "items": ["Business", "Tech", "Marketing"] },
       { "name": "Repairs", "items": ["Phone", "Computer", "Appliance"] },
