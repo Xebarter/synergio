@@ -21,10 +21,12 @@ export default withAuth(async function handler(
         customerId: req.query.customerId as string,
       });
 
+      const { customerId, ...pagination } = query;
+      
       const result = await getOrders({
         userId: user.id,
-        customerId: query.customerId,
-        pagination: query,
+        customerId,
+        pagination,
       });
 
       return res.status(200).json({ success: true, ...result });
@@ -43,11 +45,12 @@ export default withAuth(async function handler(
       }
 
       // Validate each order item
-      for (const [index, item] of data.items.entries()) {
+      for (let i = 0; i < data.items.length; i++) {
+        const item = data.items[i];
         if (!item.productId || !item.quantity || item.quantity <= 0) {
           return res.status(400).json({
             success: false,
-            error: `Item ${index + 1}: Product ID and quantity (greater than 0) are required`,
+            error: `Item ${i + 1}: Product ID and quantity (greater than 0) are required`,
           });
         }
       }

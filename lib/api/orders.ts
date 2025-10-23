@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { OrderData, PaginationOptions } from "@/types/api";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, OrderItem, Product } from "@prisma/client";
 
 export async function getOrders({
   userId,
@@ -51,7 +51,7 @@ export async function getOrders({
             product: {
               select: {
                 id: true,
-                name: true,
+                title: true,
                 sku: true,
               },
             },
@@ -103,10 +103,10 @@ export async function getOrderById(id: string, userId: string) {
           product: {
             select: {
               id: true,
-              name: true,
+              title: true,
               sku: true,
               description: true,
-              price: true,
+              priceCents: true,
             },
           },
         },
@@ -225,23 +225,14 @@ export async function createOrder(data: OrderData, userId: string) {
       include: { product: true },
     });
 
-    const total = orderItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+    const total = orderItems.reduce((sum: number, item: any) => {
+      return sum + item.price * item.quantity;
+    }, 0);
 
     // 8. Update order with total
     const updatedOrder = await prisma.order.update({
       where: { id: order.id },
       data: { total },
-      include: {
-        customer: true,
-        orderItems: {
-          include: {
-            product: true,
-          },
-        },
-      },
     });
 
     return updatedOrder;
@@ -263,7 +254,7 @@ export async function updateOrderStatus(id: string, status: string, userId: stri
 
   return prisma.order.update({
     where: { id },
-    data: { status },
+    data: { status: status as any },
   });
 }
 
@@ -365,18 +356,15 @@ export async function getOrderStats(userId: string, period: 'day' | 'week' | 'mo
       },
       orderBy: { orderDate: 'desc' },
       take: 5,
-      include: {
-        customer: {
-          select: { name: true },
-        },
-      },
       select: {
         id: true,
         orderNumber: true,
         status: true,
         total: true,
         orderDate: true,
-        customer: true,
+        customer: {
+          select: { name: true },
+        },
       },
     }),
   ]);

@@ -1,9 +1,13 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const supabase = createClient();
+    // Create a Supabase client for API routes that doesn't rely on cookies
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     
     const { data: products, error } = await supabase
       .from('products')

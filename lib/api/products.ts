@@ -11,17 +11,18 @@ export async function getProducts({
   const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'desc' } = pagination;
   const skip = (page - 1) * limit;
 
-  const where = {
+  const where: any = {
     userId,
-    ...(search && {
-      OR: [
-        { name: { contains: search, mode: 'insensitive' as const } },
-        { description: { contains: search, mode: 'insensitive' as const } },
-        { sku: { contains: search, mode: 'insensitive' as const } },
-        { category: { contains: search, mode: 'insensitive' as const } },
-      ],
-    }),
   };
+
+  if (search) {
+    where.OR = [
+      { title: { contains: search, mode: 'insensitive' as const } },
+      { description: { contains: search, mode: 'insensitive' as const } },
+      { sku: { contains: search, mode: 'insensitive' as const } },
+      { category: { name: { contains: search, mode: 'insensitive' as const } } },
+    ];
+  }
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -31,12 +32,12 @@ export async function getProducts({
       orderBy: { [sortBy]: sortOrder },
       select: {
         id: true,
-        name: true,
+        title: true,
         description: true,
-        price: true,
+        priceCents: true,
         sku: true,
         stock: true,
-        image: true,
+        images: true,
         category: true,
         createdAt: true,
         updatedAt: true,
@@ -92,12 +93,61 @@ export async function getProductById(id: string, userId: string) {
 }
 
 export async function createProduct(data: ProductData, userId: string) {
-  return prisma.product.create({
+  // Generate slug from title
+  const slug = data.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
+  // Prepare the create data with explicit types
+  const createData = {
     data: {
-      ...data,
-      userId,
-    },
-  });
+      // Required fields from Prisma schema
+      title: data.title,
+      sku: data.sku || `SKU-${Date.now()}`,
+      slug,
+      priceCents: data.priceCents,
+      stock: data.stock || 0,
+      currency: data.currency || 'USD',
+      images: data.images || [],
+      tags: data.tags || [],
+      trackQuantity: data.trackQuantity ?? true,
+      allowBackorder: data.allowBackorder ?? false,
+      requiresShipping: data.requiresShipping ?? true,
+      isActive: data.isActive ?? true,
+      isFeatured: data.isFeatured ?? false,
+      ratingCount: 0,
+      viewCount: 0,
+      sortOrder: 0,
+      // Optional fields
+      ...(data.description && { description: data.description }),
+      ...(data.shortDescription && { shortDescription: data.shortDescription }),
+      ...(data.compareAtPriceCents && { compareAtPriceCents: data.compareAtPriceCents }),
+      ...(data.costCents && { costCents: data.costCents }),
+      ...(data.weightGrams && { weightGrams: data.weightGrams }),
+      ...(data.seoTitle && { seoTitle: data.seoTitle }),
+      ...(data.seoDescription && { seoDescription: data.seoDescription }),
+      // JSON fields with defaults
+      attributes: data.attributes || {},
+      metadata: data.metadata || {},
+      // Relations
+      user: {
+        connect: { id: userId }
+      },
+      ...(data.categoryId && {
+        category: {
+          connect: { id: data.categoryId }
+        }
+      }),
+      ...(data.brandId && {
+        brand: {
+          connect: { id: data.brandId }
+        }
+      })
+    }
+  } as const;
+
+  return prisma.product.create(createData);
 }
 
 export async function updateProduct(id: string, data: ProductData, userId: string) {
@@ -187,14 +237,29 @@ export async function updateProductStock(
 }
 
 export async function getProductCategories(userId: string) {
-  return prisma.product.findMany({
-    where: { userId },
-    distinct: ['category'],
+  // First get all unique category IDs
+  const products = await prisma.product.findMany({
+    where: { 
+      userId, 
+      category: { 
+        isNot: null 
+      } 
+    },
     select: {
-      category: true,
+      categoryId: true,
+    },
+    distinct: ['categoryId'],
+  });
+
+  // Then fetch the full category data
+  const categoryIds = products.map(p => p.categoryId).filter(Boolean) as string[];
+  
+  return prisma.category.findMany({
+    where: {
+      id: { in: categoryIds },
     },
     orderBy: {
-      category: 'asc',
+      name: 'asc',
     },
   });
 }

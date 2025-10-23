@@ -25,6 +25,7 @@ model User {
   customers     Customer[]
   products      Product[]
   orders        Order[]
+  brands        Brand[]
 
   @@map("users")
 }
@@ -86,53 +87,66 @@ model Customer {
 }
 
 model Category {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
-  slug        String   @unique
+  slug        String     @unique
   description String?
-  parentId    String?  @map("parent_id")
-  imageUrl    String?  @map("image_url")
+  parentId    String?    @map("parent_id")
+  parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryToCategory")
+  products    Product[]
+  imageUrl    String?    @map("image_url")
   icon        String?
   color       String?
-  sortOrder   Int      @default(0) @map("sort_order")
-  isFeatured  Boolean  @default(false) @map("is_featured")
-  isActive    Boolean  @default(true) @map("is_active")
-  seoTitle    String?  @map("seo_title")
+  sortOrder   Int        @default(0) @map("sort_order")
+  isFeatured  Boolean    @default(false) @map("is_featured")
+  isActive    Boolean    @default(true) @map("is_active")
+  seoTitle    String?    @map("seo_title")
   seoDescription String? @map("seo_description")
-  metadata    Json     @default("{}")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  metadata    Json       @default("{}")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
 
   @@map("categories")
 }
 
 model Brand {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
-  slug        String   @unique
+  slug        String    @unique
   description String?
-  logoUrl     String?  @map("logo_url")
+  logoUrl     String?   @map("logo_url")
   website     String?
-  isActive    Boolean  @default(true) @map("is_active")
-  metadata    Json     @default("{}")
-  createdAt   DateTime @default(now()) @map("created_at")
+  isActive    Boolean   @default(true) @map("is_active")
+  metadata    Json      @default("{}")
+  products    Product[]
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("brands")
 }
 
 model Product {
-  id                    String    @id @default(cuid())
-  sku                   String    @unique
+  id                    String           @id @default(cuid())
+  sku                   String           @unique
   title                 String
-  slug                  String    @unique
+  slug                  String           @unique
+  variants              ProductVariant[]
+  orderItems            OrderItem[]
+  userId                String           @map("user_id")
+  user                  User             @relation(fields: [userId], references: [id])
+  categoryId            String?          @map("category_id")
+  category              Category?        @relation(fields: [categoryId], references: [id])
+  brandId               String?          @map("brand_id")
+  brand                 Brand?           @relation(fields: [brandId], references: [id])
   description           String?
   shortDescription      String?   @map("short_description")
   priceCents            Int       @map("price_cents")
   compareAtPriceCents   Int?      @map("compare_at_price_cents")
   costCents             Int?      @map("cost_cents")
   currency              String    @default("USD")
-  categoryId            String?   @map("category_id")
-  brandId               String?   @map("brand_id")
   images                String[]
   thumbnail             String?
   gallery               Json      @default("[]")
@@ -155,8 +169,6 @@ model Product {
   metadata              Json      @default("{}")
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
-  category              Category? @relation(fields: [categoryId], references: [id])
-  brand                 Brand?    @relation(fields: [brandId], references: [id])
 
   @@map("products")
 }

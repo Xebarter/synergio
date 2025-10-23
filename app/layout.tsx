@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 import { Providers } from '@/providers/providers';
+import { ToastProvider } from '@/components/providers/toast-provider';
 
 const montserrat = Montserrat({
   weight: ['300', '400', '500', '600', '700'],
@@ -86,9 +87,11 @@ export default function RootLayout({
         />
       </head>
       <body className={montserrat.className}>
-        <Providers>
-          {children}
-        </Providers>
+        <ToastProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </ToastProvider>
       </body>
     </html>
   );

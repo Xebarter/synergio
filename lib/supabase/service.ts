@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { type CookieOptions } from '@supabase/ssr';
 
 // Supabase service role client (has full access to the database)
 export const createServiceClient = () => {
@@ -22,14 +22,14 @@ export const createServiceClient = () => {
 };
 
 // Server-side client with cookie-based auth
-export const createServerClient = () => {
+export const createServerClientWithCookies = () => {
   const cookieStore = cookies();
   
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     throw new Error('Missing Supabase environment variables for server client');
   }
 
-  return createClient(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
@@ -41,7 +41,7 @@ export const createServerClient = () => {
           cookieStore.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options });
+          cookieStore.delete(name);
         },
       },
     }
